@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Attibute, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -10,6 +10,12 @@ export class AttributeService {
   }
 
   async getAttribute(id: number): Promise<Attibute> {
-    return await prisma.attibute.findUnique({ where: { id } });
+    const attribute = await prisma.attibute.findUnique({ where: { id } });
+
+    if (attribute) {
+      return attribute;
+    } else {
+      throw new HttpException('Atributo não encontrado', HttpStatus.NOT_FOUND);
+    }
   }
 }
